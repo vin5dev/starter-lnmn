@@ -1,27 +1,6 @@
 version: '3'
 
 services:
-  server-nginx:
-    container_name: ${PROJECT_NAME}-nginx
-    restart: always
-    depends_on:
-      - api-nest
-      - client-next
-      - db-mysql
-    build:
-      context: ./server-nginx
-      dockerfile: Dockerfile.${STAGE}
-    volumes:
-      # - ./server-nginx/default.conf:/etc/nginx/conf.d/default.conf
-      - ./server-nginx/templates:/etc/nginx/templates
-    environment:
-      API_GUEST_PORT: ${API_GUEST_PORT}
-      CLIENT_GUEST_PORT: ${CLIENT_GUEST_PORT}
-    ports:
-      - "127.0.0.1:80:80"
-    networks:
-      - network-lnmn
-
   api-nest:
     container_name: ${PROJECT_NAME}-api-nest
     restart: always
@@ -33,41 +12,4 @@ services:
       - /home/app/node_modules
       - /home/app/dist
     ports:
-      - 81:${API_GUEST_PORT}
-    networks:
-      - network-lnmn
-
-  client-next:
-    container_name: ${PROJECT_NAME}-client-next
-    restart: always
-    build:
-      context: ./client-next
-      dockerfile: Dockerfile.${STAGE}
-    volumes:
-      - ./client-next:/home/app
-      - /home/app/node_modules
-    ports:
-      - 82:${CLIENT_GUEST_PORT}
-    networks:
-      - network-lnmn
-
-  db-mysql:
-    container_name: ${PROJECT_NAME}-database-mysql
-    build:
-      context: ./database-mysql
-      dockerfile: Dockerfile.${STAGE}
-    restart: 'always'
-    ports:
-      - "127.0.0.1:${MYSQL_HOST_PORT}:3306"
-    volumes: 
-      - ./database-mysql/data:/var/lib/mysql
-      - ./database-mysql/log:/var/log/mysql
-      # - ./database-mysql/config/my.cnf:/etc/mysql/my.cnf
-    env_file:
-      - .env
-    networks:
-      - network-lnmn
-
-networks:
-  network-lnmn:
-    driver: bridge
+      - 80:3000
